@@ -1,15 +1,19 @@
-# Use the official n8n image as a base
-FROM n8nio/n8n:latest
+FROM node:18-alpine
 
-# Set the working directory inside the container
-WORKDIR /home/node
+ARG N8N_VERSION=1.56.1
 
-# Set the environment variable for SQLite persistence
-# Use a directory that is persisted between deployments
-ENV N8N_DATABASE_SQLITE_FILE=/mnt/data/n8n.sqlite
+RUN apk add --update graphicsmagick tzdata
 
-# Expose the n8n UI port
-EXPOSE 5678
+USER root
 
-# Run n8n with the necessary settings
-CMD ["n8n"]
+RUN apk --update add --virtual build-dependencies python3 build-base && \
+    npm_config_user=root npm install --location=global n8n@${N8N_VERSION} && \
+    apk del build-dependencies
+
+WORKDIR /data
+
+EXPOSE $PORT
+
+ENV N8N_USER_ID=root
+
+CMD ["sh", "-c", "n8n start"]

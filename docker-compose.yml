@@ -7,7 +7,7 @@ services:
     volumes:
       - n8n-data:/mnt/data  # This is where the SQLite database will be stored persistently
     environment:
-      - N8N_DATABASE_SQLITE_FILE=/mnt/data/n8n.sqlite
+      - N8N_DATABASE_SQLITE_FILE=/data/n8n.sqlite
     restart: always
 
 volumes:
